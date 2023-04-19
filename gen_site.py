@@ -19,7 +19,10 @@ if __name__ == '__main__':
     src_dir = 'src'
     target_templates = [
         'index.html',
+        'motion.html',
         'script.js',
+        'motion.js',
+        'styles.css',
     ]
 
     dest_dir = 'dist'

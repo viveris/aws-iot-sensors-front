@@ -1,89 +1,85 @@
 Chart.defaults.color = "#000000";
-Chart.defaults.font.size = 16;
+Chart.defaults.font.size = 12;
 
-const ctx = document.getElementById('stm32u1Chart').getContext('2d');
 
-const chart = new Chart(ctx, {
-  type: 'scatter',
-  data: {
-    datasets: [
-      {
-        label: "x",
-        data: [],
-        parsing: {
-          yAxisKey: "a_x",
-        },
-        showLine: true,
-        borderWidth: 1,
-      },
-      {
-        label: "y",
-        data: [],
-        parsing: {
-          yAxisKey: "a_y",
-        },
-        showLine: true,
-        borderWidth: 1,
-      },
-      {
-        label: "z",
-        data: [],
-        parsing: {
-          yAxisKey: "a_z",
-        },
-        showLine: true,
-        borderWidth: 1,
-      },
-    ]
-  },
-  options: {
-    animation: false,
-    scales: {
-      x: {
-        title: {
-          text: "Time from now (s)",
-          display: true,
-        },
-      },
-      y: {
-        title: {
-          text: "Acceleration (mG)",
-          display: true,
-        }
-      },
+const apiUrl = "https://wunfz8npma.execute-api.eu-west-3.amazonaws.com/v1";
+
+
+function initChart(id, datasets, yLabel) {
+  const ctx = document.getElementById(id).getContext('2d');
+
+  const datasetDefaults = {
+    data: [],
+    showLine: true,
+    borderWidth: 1,
+  };
+  const newDatasets = datasets.map(
+    function (e) {
+      return {...datasetDefaults, ...e};
     }
-  }
-});
+  );
 
-const apiUrl = "https://ynvl3toggi.execute-api.eu-west-3.amazonaws.com/v1";
+  const chart = new Chart(ctx, {
+    type: 'scatter',
+    data: {
+      datasets: newDatasets,
+    },
+    options: {
+      animation: false,
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          title: {
+            text: "Time from now (s)",
+            display: true,
+          },
+          min: -300,
+          max: 10,
+        },
+        y: {
+          title: {
+            text: yLabel,
+            display: true,
+          }
+        },
+      }
+    }
+  });
 
-let url = apiUrl + "/measurements/motion/stm32_1/recent";
-
-let options = {
-  headers: {
-    'Accept': 'application/json',
-  },
-};
-
-function updateData() {
-  fetch(url, options)
-    .then(response => response.json())
-    .then(data => {
-      let items = data["Items"];
-      let now = Date.now();
-      let plotData = items.map(e => {
-        return {
-          x: (Number(e.timestamp.N) - now) / 1000,
-          a_x: Number(e.payload.M.acceleration_mG_x.N),
-          a_y: Number(e.payload.M.acceleration_mG_y.N),
-          a_z: Number(e.payload.M.acceleration_mG_z.N),
-        }
-      });
-      chart.data.datasets[0].data = plotData;
-      chart.data.datasets[1].data = plotData;
-      chart.data.datasets[2].data = plotData;
-      chart.update();
-    });
+  return chart;
 }
 
-setInterval(updateData, 1000);
+function setDataUpdates(chart, urlPath, fieldsMap) {
+  function updateData() {
+    const options = {
+      headers: {
+        'Accept': 'application/json',
+      },
+    };
+
+    const url = apiUrl + urlPath;
+    fetch(url, options)
+      .then(response => response.json())
+      .then(data => {
+        const items = data["Items"];
+        const now = Date.now() / 1000;
+        const plotData = items.map(e => {
+          const formattedData = {
+            x: (Number(e.timestamp.N) - now),
+          }
+          fieldsMap.forEach(yElem => {
+            const destField = yElem[0];
+            const srcField = yElem[1];
+            formattedData[destField] = Number(e.payload.M[srcField].N);
+          });
+          return formattedData;
+        });
+        chart.data.datasets.forEach(e => {
+          e.data = plotData;
+        });
+        chart.update();
+      });
+  }
+
+  setInterval(updateData, 1000);
+}
