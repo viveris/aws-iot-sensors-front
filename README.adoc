@@ -1,0 +1,36 @@
+= aws-iot-sensors-front
+
+Front web app for visualization of sensors data in dashobards.  Data are fetched from the API deployed by aws-iot-sensors-infra.
+
+
+== Usage
+
+The project compiles a static website using Jinja.
+
+Configure a new Python environment:
+
+....
+$ python3 -m venv .venv
+$ source venv/bin/activate
+(.venv)$ pip install -r requirements.txt
+....
+
+To generate the static pages, run:
+
+....
+(.venv)$ python gen_site.py
+....
+
+Files are generated in the _dist_ folder and can be tested by launching a local web server, for example with:
+
+....
+(.venv)$ cd dist
+(.venv)$ python -m http.server
+....
+
+To deploy the website in an existing S3 bucket configured with public access and as a website:
+
+....
+$ aws s3 rm --recursive s3://[BUCKET_NAME]
+$ aws s3 cp --recursive dist s3://[BUCKET_NAME]
+....
