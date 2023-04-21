@@ -21,6 +21,8 @@ To generate the static pages, run:
 (.venv)$ python gen_site.py
 ....
 
+TIP: You might want to change the API URL in _src/script.js_ and/or the `sensorIds` variables in _src/motion.js_ and _src/environment.js_, before generating the website.
+
 Files are generated in the _dist_ folder and can be tested by launching a local web server, for example with:
 
 ....
@@ -28,9 +30,10 @@ Files are generated in the _dist_ folder and can be tested by launching a local 
 (.venv)$ python -m http.server
 ....
 
-To deploy the website in an existing S3 bucket configured with public access and as a website:
+To deploy the website in an existing S3 bucket configured with public access and as a website, such as the website bucket created by aws-iot-sensors-infra, run:
 
 ....
-$ aws s3 rm --recursive s3://[BUCKET_NAME]
-$ aws s3 cp --recursive dist s3://[BUCKET_NAME]
+$ aws s3 sync --delete dist s3://[BUCKET_NAME]
 ....
+
+NOTE: If using this project with aws-iot-sensors-infra, beware that only the motion sensors page should work.  The API URL for the Environment page does not exist and can be implemented in aws-iot-sensors-infra as an exercise without having to modify aws-iot-sensors-front.
