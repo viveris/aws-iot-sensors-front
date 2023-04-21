@@ -19,8 +19,10 @@ if __name__ == '__main__':
     src_dir = 'src'
     target_templates = [
         'index.html',
+        'environment.html',
         'motion.html',
         'script.js',
+        'environment.js',
         'motion.js',
         'styles.css',
     ]
