@@ -2,7 +2,7 @@ Chart.defaults.color = "#000000";
 Chart.defaults.font.size = 12;
 
 
-const apiUrl = "https://gi3b668cki.execute-api.eu-west-3.amazonaws.com/v1";
+const apiUrl = "https://<YOUR_API_ID>.execute-api.eu-west-3.amazonaws.com/v1";
 
 
 function initChart(id, datasets, yLabel) {
