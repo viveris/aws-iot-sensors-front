@@ -1,6 +1,6 @@
 = aws-iot-sensors-front
 
-Front web app for visualization of sensors data in dashobards.  Data are fetched from the API deployed by aws-iot-sensors-infra.
+Front web app for visualization of sensors data in dashobards.  Data are fetched from the API deployed by https://github.com/viveris/aws-iot-sensors-infra/[aws-iot-sensors-infra].
 
 
 == Usage
@@ -30,10 +30,10 @@ Files are generated in the _dist_ folder and can be tested by launching a local 
 (.venv)$ python -m http.server
 ....
 
-To deploy the website in an existing S3 bucket configured with public access and as a website, such as the website bucket created by aws-iot-sensors-infra, run:
+To deploy the website in an existing S3 bucket configured with public access and as a website, such as the website bucket created by https://github.com/viveris/aws-iot-sensors-infra/[aws-iot-sensors-infra], run:
 
 ....
 $ aws s3 sync --delete dist s3://<BUCKET_NAME>
 ....
 
-NOTE: If using this project with aws-iot-sensors-infra, beware that only the motion sensors page should work.  The API URL for the Environment page does not exist and can be implemented in aws-iot-sensors-infra as an exercise without having to modify aws-iot-sensors-front.
+NOTE: If using this project with https://github.com/viveris/aws-iot-sensors-infra/[aws-iot-sensors-infra], beware that only the motion sensors page should work.  The API URL for the Environment page does not exist and can be implemented in aws-iot-sensors-infra as an exercise without having to modify aws-iot-sensors-front.
